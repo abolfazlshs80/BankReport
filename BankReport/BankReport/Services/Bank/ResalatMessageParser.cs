@@ -13,7 +13,7 @@ namespace BankReport.Services
         public bool CanParse(string message, string phoneNumber)
         {
             // Identify based on sender name or known numbers
-            return phoneNumber.Contains("Bank Resalat") || phoneNumber.Contains("6");
+            return phoneNumber.Contains("ResalatBank") || phoneNumber.Contains("_R");
         }
 
         public DateTime ConvertToMiladi(string input)
