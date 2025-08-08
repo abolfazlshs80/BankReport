@@ -14,9 +14,9 @@ namespace BankReport.Services
         {
             new MellatMessageParser(),
             new MelliMessageParser(), // اضافه کردن سایر پارسرها
-            //new KeshavarziMessageParser(),
-            //new ResalatMessageParser(),
-            //new BankShahrMessageParser(),
+            new KeshavarziMessageParser(),
+            new ResalatMessageParser(),
+            new BankShahrMessageParser(),
             // ... هر پارسر جدیدی که ایجاد می‌کنید
         };
         }
