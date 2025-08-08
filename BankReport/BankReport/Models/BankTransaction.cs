@@ -97,7 +97,9 @@ namespace BankReport.Services
         public string BankName { get; set; }
         public decimal Amout { get; set; }
         public decimal MonyOutOfDay { get; set; }
+        public decimal MonyComOfDay { get; set; }
         public decimal MonyOutOfMonth { get; set; }
+        public decimal MonyComOfMonth { get; set; }
   
 
     }
