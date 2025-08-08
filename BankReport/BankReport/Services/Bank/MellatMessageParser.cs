@@ -18,7 +18,7 @@ namespace BankReport.Services
 
         public DateTime ConvertToMiladi(string input)
         {
-            
+
 
             // جدا کردن تاریخ و ساعت
             var parts = input.Split('-');
@@ -55,14 +55,7 @@ namespace BankReport.Services
                 RawMessage = message,
                 SenderPhoneNumber = phoneNumber
             };
-            string pattern = @"(?ix)
-^حساب(?<account>[0-9۰-۹]+)\s*
-(?<type>برداشت|واریز)[:：]?\s*
-(?<sign_before>[-+])?\s*
-(?<amount>[0-9۰-۹٬,]+)\s*
-(?<sign_after>[-+])?\s*
-مانده[:：]?\s*(?<balance>[0-9۰-۹٬,]+)\s*
-(?<date>\d{2}\/\d{2}\/\d{2})-(?<time>\d{1,2}:\d{2})";
+            string pattern = GetPatern();
 
 
             Match debitMatch = Regex.Match(message.Trim(),
@@ -71,9 +64,9 @@ pattern);
             sign = (message.Contains("برداشت")) ? "-" : "+";
             if (sign.Contains("-")) sign = "-";
             else if (sign.Contains("+")) sign = "+";
-            
-            
-                
+
+
+
             if (debitMatch.Success)
             {
                 transaction.Type = TransactionType.Debit;
@@ -92,73 +85,14 @@ pattern);
             return null; // If the message format doesn't match
         }
 
-        // Helper method for date parsing (can be moved to a common utility class)
-        private DateTime ParseDateAndTime(string dateStr, string timeStr, string dateFormat)
-        {
-            // Example: "04/04/17" (YY/MM/DD) or "1404/04/26" (YYYY/MM/DD)
-            // Example: "11:25"
-            string fullDateTimeStr;
-            string format;
-
-            if (dateFormat == "YY/MM/DD")
-            {
-                // Assuming current year is 1404/2025. This needs to be robust for future years.
-                // A better approach would be to get the current Persian year and determine the full year.
-                int currentPersianYear = 1404; // Assuming current Persian year based on 1404/03/1 in Bank Shahr example.
-                string yearPrefix = (currentPersianYear / 100).ToString(); // E.g., "14" for 14xx
-                fullDateTimeStr = $"{yearPrefix}{dateStr.Replace("/", "")}{timeStr.Replace(":", "")}";
-                format = "yyMMddHHmm"; // Example format
-            }
-            else if (dateFormat == "YYYY/MM/DD")
-            {
-                fullDateTimeStr = $"{dateStr.Replace("/", "")}{timeStr.Replace(":", "")}";
-                format = "yyyyMMddHHmm";
-            }
-            else
-            {
-                // Default or throw exception
-                return DateTime.MinValue;
-            }
-
-            try
-            {
-                // Use PersianCalendar for robustness if you have access to it or a similar library.
-                // For simplicity here, if the date is gregorian-like (YY/MM/DD), we can try directly parsing.
-                // If it's Persian, you'll need a Persian date conversion library.
-                // For now, let's assume direct parsing after year adjustment if it's YY format.
-
-                if (dateStr.Length == 8 && dateFormat == "YY/MM/DD") // e.g., "04/04/17"
-                {
-                    // This is a rough conversion and should be handled by a proper Persian calendar library
-                    int year = int.Parse(dateStr.Substring(0, 2)) + 1300; // Assuming 13xx or 14xx
-                    if (year < 1400) year += 100; // Simple adjustment for the century
-
-                    string adjustedDateStr = $"{year.ToString().Substring(2, 2)}{dateStr.Substring(3, 2)}{dateStr.Substring(6, 2)}"; // Yymmdd
-
-                    if (DateTime.TryParseExact($"{adjustedDateStr}{timeStr}", "yyMMddHH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
-                    {
-                        // This will parse based on Gregorian calendar.
-                        // If you need Jalali (Persian) dates, use a library like `PersianCalendar`.
-                        return dt;
-                    }
-                }
-                else if (dateStr.Length == 10 && dateFormat == "YYYY/MM/DD") // e.g., "1404/04/26"
-                {
-                    // You'll need a Persian Calendar library to parse this accurately into a Gregorian DateTime.
-                    // For demonstration, let's assume a simplified direct parse if it looks like Gregorian YYYY/MM/DD
-                    if (DateTime.TryParseExact($"{dateStr.Replace("/", "")}{timeStr}", "yyyyMMddHHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
-                    {
-                        return dt;
-                    }
-                }
-
-            }
-            catch (FormatException)
-            {
-                // Handle parsing errors
-            }
-            return DateTime.Now; // Indicate failure
-        }
+        private string GetPatern() => @"(?ix)
+^حساب(?<account>[0-9۰-۹]+)\s*
+(?<type>برداشت|واریز)[:：]?\s*
+(?<sign_before>[-+])?\s*
+(?<amount>[0-9۰-۹٬,]+)\s*
+(?<sign_after>[-+])?\s*
+مانده[:：]?\s*(?<balance>[0-9۰-۹٬,]+)\s*
+(?<date>\d{2}\/\d{2}\/\d{2})-(?<time>\d{1,2}:\d{2})";
     }
 
 
