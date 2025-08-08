@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:customEntry="clr-namespace:BankReport.CustomEntry;assembly=BankReport"
+             x:Class="BankReport.Views.InsertBankItemPage"
+             xmlns:app="clr-namespace:BankReport.ViewModels;assembly=BankReport"
+             xmlns:main="clr-namespace:BankReport.Views;assembly=BankReport"
+             FlowDirection="RightToLeft">
+
+    <!-- Header -->
+
+    <AbsoluteLayout >
+        <Grid RowDefinitions="70,4*,80" BackgroundColor="{StaticResource HeaderMenoColor}" >
+            <FlexLayout x:Name="headerFlexLayout" Grid.Row="0" FlowDirection="RightToLeft" Direction="Row" JustifyContent="SpaceBetween" BackgroundColor="{StaticResource HeaderMenoColor}">
+                <Button x:Name="ButtonLogo" Text="" FontSize="30"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        TextColor="{StaticResource TexHeaderMenoColor}"
+                        BackgroundColor="Transparent"/>
+                <Grid ColumnDefinitions="2*,4*">
+                    <Button Text="☰" FontSize="Medium"
+                            Clicked="Button_OpenMenu_OnClicked"
+                            Grid.Column="0"
+                            TextColor="{StaticResource TexHeaderMenoColor}"
+                            BackgroundColor="Transparent"/>
+                    <Label Text="گزارش بانکی " 
+                           TextColor="White"
+                           FontSize="Subtitle"
+                           VerticalOptions="Center"
+                           Grid.Column="1"
+                    />
+
+                </Grid>
+
+
+            </FlexLayout>
+
+
+
+<StackLayout Grid.Row="1"  HeightRequest="2000" MinimumHeightRequest="500">
+
+
+                <!--<StackLayout.BindingContext>
+                    <app:DeviceViewModel />
+                </StackLayout.BindingContext>-->
+
+                <ScrollView>
+                    <StackLayout Padding="20" Spacing="15">
+                        
+                        
+                        <!-- Device Name -->
+                        <Label Text="نام بانک یا شماره" />
+                        <Frame CornerRadius="10"
+                      BorderColor="#e6e6e6"
+                      Padding="5"
+                      HasShadow="False"
+                      BackgroundColor="{StaticResource BackgroundItemDeviceColor}">
+                            <Entry x:Name="TextBoxBankItemName"
+ 
+                          Visual="Default"
+   
+                          BackgroundColor="Transparent"
+                          TextColor="Black">
+                             
+
+                            </Entry>
+
+
+
+                        </Frame>
+
+                        <!-- SIM Card Number -->
+                        <Label Text="  شماره حساب " />
+                        <Frame CornerRadius="10"
+                               BorderColor="#e6e6e6"
+                      Padding="5"
+                      HasShadow="False"
+                      BackgroundColor="{StaticResource BackgroundItemDeviceColor}">
+                            <Entry x:Name="TextBoxBankItemNumber"
+ 
+                          Visual="Default"
+   
+                          BackgroundColor="Transparent"
+                          TextColor="Black">
+                         
+
+                            </Entry>
+
+
+
+                        </Frame>
+
+
+                       
+         
+
+
+
+               
+
+
+
+
+
+                        <!-- Action Buttons -->
+                        <Grid ColumnSpacing="10" Margin="0,20,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Text="انصراف"
+                           Grid.Column="0"
+                           BackgroundColor="{StaticResource DisableButton}"
+                           TextColor="White"
+                                    x:Name="ButtonCansel"
+                                    Clicked="ButtonCansel_Clicked"
+                           BorderColor="#E0E0E0"
+                           BorderWidth="1" />
+
+                            <Button Text="افزودن"
+                                    x:Name="ButtonInsertBankItem"
+                                    Clicked="ButtonInsertBankItem_OnClicked"
+                           Grid.Column="1"
+                           BackgroundColor="{StaticResource EnableButton}"
+                           TextColor="#000000" />
+                        </Grid>
+                    </StackLayout>
+                </ScrollView>
+
+
+            </StackLayout>
+
+
+        </Grid>
+
+        <main:MenuBarCustomContent x:Name="menu" />
+    </AbsoluteLayout>
+
+</ContentPage>

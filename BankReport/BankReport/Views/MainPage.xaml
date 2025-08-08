@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+
+
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    
+             xmlns:forms="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+                    xmlns:main="clr-namespace:BankReport.Views;assembly=BankReport"
+             x:Class="BankReport.Views.MainPage"
+             NavigationPage.HasNavigationBar="False"
+             
+                 BackgroundColor="{StaticResource HeaderMenoColor}">
+
+    <AbsoluteLayout BackgroundColor="{StaticResource HeaderMenoColor}"  >
+        <Grid  RowDefinitions="70,4*" BackgroundColor="{StaticResource HeaderMenoColor}" >
+            <FlexLayout x:Name="headerFlexLayout" Grid.Row="0" FlowDirection="RightToLeft" Direction="Row" JustifyContent="SpaceBetween" BackgroundColor="{StaticResource HeaderMenoColor}">
+                <Button x:Name="ButtonLogo" Text="" FontSize="30"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        TextColor="{StaticResource TexHeaderMenoColor}"
+                        BackgroundColor="Transparent"/>
+                <Grid ColumnDefinitions="2*,4*">
+                    <Button Text="☰" FontSize="Medium"
+                            Clicked="Button_OpenMenu_OnClicked"
+                              Grid.Column="0"
+                            TextColor="{StaticResource TexHeaderMenoColor}"
+                            BackgroundColor="Transparent"/>
+                    <Label Text="گزارش بانکی " 
+                           TextColor="White"
+                           FontSize="Subtitle"
+                           VerticalOptions="Center"
+                           Grid.Column="1"
+                    />
+           
+                
+                
+                </Grid>
+           
+
+            </FlexLayout>
+
+            <Grid Grid.Row="1" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
+                <StackLayout Grid.Row="0"  >
+
+
+
+
+                    <ScrollView Orientation="Vertical" >
+                        <ListView ItemsSource="{Binding BankItems}"   x:Name="ItemsListView"
+SeparatorVisibility="None" 
+SelectionMode="None"
+HasUnevenRows="True">
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Padding="10"  >
+
+                                            <!-- آیتم با پس‌زمینه و فاصله -->
+                                            <Frame BackgroundColor="{StaticResource BackgroundItemDeviceColor}" 
+                 CornerRadius="10"
+                 HasShadow="True"
+                 Padding="20,30"
+                 Margin="0">
+
+                                                <Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto" 
+                    VerticalOptions="Center">
+
+                                                    <!-- آیکون دستگاه -->
+                                                    <Label Text="{Binding Name}" FontSize="Subtitle"
+                        Margin="5"/>
+
+                                                    <!-- اطلاعات دستگاه -->
+                                                    <StackLayout Grid.Column="1" Spacing="2" FlowDirection="RightToLeft">
+                                                        <Label Text="{Binding CardNumber}"  HorizontalTextAlignment="End" FontSize="Micro" FontAttributes="Bold"/>
+
+                                                        <!-- وضعیت فعال/غیرفعال -->
+                                                        <Label FontSize="Micro" TextColor="Gray"  >
+                                                            <Label.Triggers>
+                                                                <DataTrigger TargetType="Label" Binding="{Binding StatusOfDevice}" Value="True">
+                                                                    <Setter Property="Text" Value="فعال است"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger TargetType="Label" Binding="{Binding StatusOfDevice}" Value="False">
+                                                                    <Setter Property="Text" Value="غیرفعال است"/>
+                                                                </DataTrigger>
+                                                            </Label.Triggers>
+                                                        </Label>
+                                                    </StackLayout>
+
+                                           
+                                                    <Label Grid.Column="3" Text="✏️" ClassId="{Binding Id}"  FontSize="Subtitle"
+                                                   Margin="10,0,5,0">
+                                                        <Label.GestureRecognizers>
+                                                            <TapGestureRecognizer 
+                                                            Command="{Binding BindingContext.EditBankItemCommand, Source={x:Reference Name=ItemsListView}}"
+                                                            CommandParameter="{Binding .}"
+                                                        ></TapGestureRecognizer>
+                                                        </Label.GestureRecognizers>
+                                                    </Label>
+
+                                                    <!-- آیکون جزئیات -->
+                                                    <Label Grid.Column="4" Text="⛔"  ClassId="{Binding Id}"    FontSize="Subtitle"
+                                                       Margin="10,0,5,0">
+                                                        <Label.GestureRecognizers>
+                                                            <TapGestureRecognizer 
+                                                            Command="{Binding BindingContext.DeleteBankItemCommand, Source={x:Reference Name=ItemsListView}}"
+                                                            CommandParameter="{Binding .}"
+                                                            ></TapGestureRecognizer>
+                                                        </Label.GestureRecognizers>
+                                                    </Label>
+                                                </Grid>
+                                            </Frame>
+
+                                            <!-- افزایش فاصله بین آیتم‌ها (دو برابر شدن نسبت به حالت قبلی) -->
+                                            <BoxView HeightRequest="0" Color="Transparent"/>
+
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollView>
+
+
+                </StackLayout>
+                <Button Grid.Row="1" Text="+"
+                    x:Name="ButtonInsertDevice"
+              Clicked="ButtonInsertBankItem_OnClicked"
+                CornerRadius="30"
+                BackgroundColor="{StaticResource TogglePlusButton}"
+                TextColor="White"
+                FontSize="30"
+                    
+                HorizontalOptions="Center"
+                VerticalOptions="Center"/>
+            </Grid>
+
+
+
+        </Grid>
+        <main:MenuBarCustomContent x:Name="menuBarCustomContent" />
+
+
+
+        <!-- Loading Overlay -->
+
+
+
+    </AbsoluteLayout>
+
+
+
+
+
+
+
+
+</ContentPage>
+
+

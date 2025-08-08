@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Frame  xmlns="http://xamarin.com/schemas/2014/forms"
+        x:Name="MenuPanel"
+        BackgroundColor="{StaticResource BackgroundItemDeviceColor}"
+        WidthRequest="300"
+        
+        HeightRequest="900"
+        CornerRadius="0"
+        TranslationX="500"
+        TranslationY="70"
+              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              x:Class="BankReport.Views.MenuBarCustomContent">
+
+
+
+    <StackLayout  Orientation="Vertical" >
+       
+        <StackLayout Orientation="Horizontal" Padding="20" HorizontalOptions="CenterAndExpand">
+     
+            <Label BackgroundColor="Transparent"  Text="📱" />
+            <Label Text="دزدگیر هوشمند اسمارت مهر" FontSize="20" FontAttributes="Bold" TextColor="#333333" HorizontalOptions="Center"/>
+
+            </StackLayout>
+        <StackLayout Orientation="Horizontal" Padding="10" HorizontalOptions="Start">
+            <Label  BackgroundColor="Transparent"  x:Name="LabelFullName" Text="ssdsd" />
+        </StackLayout>
+            <BoxView HeightRequest="2" Color="Gray" HorizontalOptions="FillAndExpand"/>
+            <StackLayout Orientation="Horizontal" >
+            <Button TextColor="#1E88E5" FontSize="25" BackgroundColor="Transparent"  Text="🔑" />
+
+
+            <Button x:Name="ButtonChangePassword" Clicked="ButtonChangePassword_OnClicked" BackgroundColor="Transparent" TextColor="{StaticResource ItemMenuTextColor}" Text="تغییر رمز عبور برنامه" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+            <Button FontSize="25" BackgroundColor="Transparent"  Text="❓" />
+            <Button x:Name="Buttonhelp" Clicked="Buttonhelp_OnClicked" BackgroundColor="Transparent" TextColor="{StaticResource ItemMenuTextColor}" Text="راهنما" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+            <Button FontSize="25" BackgroundColor="Transparent"  Text="📜"  />
+            <Button Clicked="ButtonAboutUs_OnClicked" x:Name="ButtonAboutUs" BackgroundColor="Transparent" TextColor="{StaticResource ItemMenuTextColor}" Text="درباره ما" />
+            </StackLayout>
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="Start">
+            <Button FontSize="25" BackgroundColor="Transparent"  Text="⚒️" />
+            <Button  BackgroundColor="Transparent" TextColor="{StaticResource ItemMenuTextColor}" Text="تنظیمات " />
+            </StackLayout>-->
+            <StackLayout Orientation="Horizontal">
+            <Button FontSize="25" BackgroundColor="Transparent"  Text="🚪"  />
+            <Button x:Name="ButtonExit" Clicked="ButtonExit_OnClicked" BackgroundColor="Transparent" TextColor="{StaticResource ItemMenuTextColor}" Text=" خروج" />
+            </StackLayout>
+        </StackLayout>
+ 
+</Frame>

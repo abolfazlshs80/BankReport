@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:converters="clr-namespace:BankReport.Converters"
+             x:Class="BankReport.App">
+    <!--
+        Define global resources and styles here, that apply to all pages in your app.
+    -->
+    <Application.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Entry">
+                <Setter Property="FontFamily" Value="WebYekan.ttf#WebYekan">
+
+                </Setter>
+            </Style>
+            <converters:TransactionTypeToColorConverter x:Key="TransactionTypeToColorConverter" />
+            <converters:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter" />
+
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="#6200EE" />
+                <Setter Property="BarTextColor" Value="White" />
+            </Style>
+
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="WebYekan.ttf#WebYekan">
+
+                </Setter>
+                <Setter Property="TextColor" Value="Black"></Setter>
+
+            </Style>
+            <Style  TargetType="Button">
+                <Setter Property="FontFamily" Value="WebYekan.ttf#WebYekan">
+
+                </Setter>
+            </Style>
+            <Color x:Key="EnableButton">#FFC107</Color>
+            <Color x:Key="DisableButton">#EC1919</Color>
+            <Color x:Key="GridAdmin">#E9E8E7</Color>
+            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="HeaderMenoColor">#40B4E5</Color>
+            <Color x:Key="ItemMenuTextColor">#333333</Color>
+            <Color x:Key="TexHeaderMenoColor">#ffff</Color>
+            <Color x:Key="SecondaryColor">#2ecc71</Color>
+            <Color x:Key="TogglePlusButton">#2196F3</Color>
+            <Color x:Key="DialogAcceptButton">#40B4E5</Color>
+            <Color x:Key="BackgroundColor">#f1f1f1</Color>
+            <Color x:Key="BackgroundMainColor">#626364</Color>
+            <Color x:Key="BackgroundItemDeviceColor">#94D6EC</Color>
+            <Color x:Key="BackgroundSettingColor">#f3f7fa</Color>
+
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>

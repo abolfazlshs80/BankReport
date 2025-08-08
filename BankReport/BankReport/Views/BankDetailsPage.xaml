@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+
+
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    
+             xmlns:forms="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+                    xmlns:main="clr-namespace:BankReport.Views;assembly=BankReport"
+             x:Class="BankReport.Views.BankDetailsPage"
+             NavigationPage.HasNavigationBar="False"
+             
+                 BackgroundColor="{StaticResource HeaderMenoColor}">
+
+    <AbsoluteLayout BackgroundColor="{StaticResource HeaderMenoColor}"  >
+        <Grid  RowDefinitions="70,4*" BackgroundColor="{StaticResource HeaderMenoColor}" >
+            <FlexLayout x:Name="headerFlexLayout" Grid.Row="0" FlowDirection="RightToLeft" Direction="Row" JustifyContent="SpaceBetween" BackgroundColor="{StaticResource HeaderMenoColor}">
+                <Button x:Name="ButtonLogo" Text="" FontSize="30"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        TextColor="{StaticResource TexHeaderMenoColor}"
+                        BackgroundColor="Transparent"/>
+                <Grid ColumnDefinitions="2*,4*">
+                    <Button Text="☰" FontSize="Medium"
+                            Clicked="Button_OpenMenu_OnClicked"
+                              Grid.Column="0"
+                            TextColor="{StaticResource TexHeaderMenoColor}"
+                            BackgroundColor="Transparent"/>
+                    <Label Text="گزارش بانکی " 
+                           TextColor="White"
+                           FontSize="Subtitle"
+                           VerticalOptions="Center"
+                           Grid.Column="1"
+                    />
+           
+                
+                
+                </Grid>
+           
+
+            </FlexLayout>
+
+            <ScrollView Grid.Row="1">
+                
+                <StackLayout Margin="0,0,0,0" Orientation="Vertical" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Grid HeightRequest="60" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label 
+                            Text="  گزارش کلی" 
+                            TextColor="White"
+                            FontSize="22"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Center"
+                            FontAttributes="Bold"
+      
+                        />
+                        <ImageButton Grid.Column="1" 
+                                     Source="icons8backarrow64.png" 
+                                     HeightRequest="50"
+                                     BackgroundColor="Transparent"
+                                     HorizontalOptions="End"
+                                     VerticalOptions="Center"
+                                     Padding="0"
+                                     x:Name="BackButton"
+                                     Clicked="BackButton_Clicked"
+                                     />
+
+                    </Grid>
+
+
+                    <Grid ColumnDefinitions="*,*" >
+                        <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0" FontSize="Micro" Text="شماره حساب" Grid.Column="0"/>
+                        <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.BankName}" Grid.Column="1"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*" >
+                        <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0"  FontSize="Micro" Text="موجودی" Grid.Column="0"/>
+                        <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.Amout}" Grid.Column="1"/>
+                    </Grid>
+
+
+
+                    <Grid ColumnDefinitions="*,*" >
+                        <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0"  FontSize="Micro" Text="مبلغ خرج شده در این ماه" Grid.Column="0"/>
+                        <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.MonyOutOfMonth}" Grid.Column="1"/>
+                    </Grid>
+
+
+                    <Grid ColumnDefinitions="*,*" >
+                        <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0"  FontSize="Micro" Text="بلغ خرج شده در این روز " Grid.Column="0"/>
+                        <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.MonyOutOfDay}" Grid.Column="1"/>
+                    </Grid>
+                </StackLayout>
+            </ScrollView>
+   
+
+
+        </Grid>
+        <main:MenuBarCustomContent x:Name="menuBarCustomContent" />
+
+
+
+        <!-- Loading Overlay -->
+
+
+
+    </AbsoluteLayout>
+
+
+
+
+
+
+
+
+</ContentPage>
+
+
