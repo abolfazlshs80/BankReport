@@ -1,6 +1,8 @@
 # BankReport
 
+General Description
 BankReport is a cross-platform mobile application built with Xamarin, targeting both Android and iOS platforms. The solution is organized into separate projects for shared code, Android, and iOS implementations.
+This application receives transaction/balance/account information from various banking sources, processes it, and sends it to users or administrators as scheduled or event-based reports via SMS. Purpose: Automate financial reporting in environments where SMS is the best method of notification.
 
 ## Solution Structure
 
