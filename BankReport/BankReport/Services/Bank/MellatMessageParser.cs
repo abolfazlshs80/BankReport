@@ -51,7 +51,7 @@ namespace BankReport.Services
         {
             BankTransaction transaction = new BankTransaction
             {
-                BankName = "Bank Melli",
+                BankName = "Bank Mellat",
                 RawMessage = message,
                 SenderPhoneNumber = phoneNumber
             };
@@ -75,7 +75,7 @@ pattern);
                 transaction.Amount = decimal.Parse(sign + debitMatch.Groups["amount"].Value.Replace(",", ""));
                 transaction.Balance = decimal.Parse(debitMatch.Groups["balance"].Value.Replace(",", ""));
 
-                transaction.AccountId = debitMatch.Groups["accountId"].Value;
+                transaction.AccountId = debitMatch.Groups["account"].Value;
 
                 transaction.TransactionDate = DateTime.Now;
 
