@@ -51,48 +51,45 @@ namespace BankReport.Services
         {
             BankTransaction transaction = new BankTransaction
             {
-                BankName = "Bank Mellat",
+                BankName = "Bank Melli",
                 RawMessage = message,
-                SenderPhoneNumber = phoneNumber // Capture sender for debugging/logging
+                SenderPhoneNumber = phoneNumber
             };
+            string pattern = @"(?ix)
+^حساب(?<account>[0-9۰-۹]+)\s*
+(?<type>برداشت|واریز)[:：]?\s*
+(?<sign_before>[-+])?\s*
+(?<amount>[0-9۰-۹٬,]+)\s*
+(?<sign_after>[-+])?\s*
+مانده[:：]?\s*(?<balance>[0-9۰-۹٬,]+)\s*
+(?<date>\d{2}\/\d{2}\/\d{2})-(?<time>\d{1,2}:\d{2})";
 
-            // Attempt to parse Debit message
-            Match debitMatch = Regex.Match(message, @"حساب\s*(?<accountId>\d+)\s*برداشت\s*(?<amount>[\d,]+)\s*مانده\s*(?<balance>[\d,]+)\s*(?<date>\d{2}/\d{2}/\d{2,4})-(?<time>\d{1,2}:\d{2})");
+
+            Match debitMatch = Regex.Match(message.Trim(),
+pattern);
+            string sign = debitMatch.Groups["sign_before"].Value + debitMatch.Groups["sign_after"].Value;
+            sign = (message.Contains("برداشت")) ? "-" : "+";
+            if (sign.Contains("-")) sign = "-";
+            else if (sign.Contains("+")) sign = "+";
+            
+            
+                
             if (debitMatch.Success)
             {
                 transaction.Type = TransactionType.Debit;
-                transaction.Amount = decimal.Parse(debitMatch.Groups["amount"].Value.Replace(",", ""));
+
+
+                transaction.Amount = decimal.Parse(sign + debitMatch.Groups["amount"].Value.Replace(",", ""));
                 transaction.Balance = decimal.Parse(debitMatch.Groups["balance"].Value.Replace(",", ""));
+
                 transaction.AccountId = debitMatch.Groups["accountId"].Value;
-                //  transaction.TransactionDate = ParseDateAndTime(debitMatch.Groups["date"].Value, debitMatch.Groups["time"].Value, "YY/MM/DD");
+
                 transaction.TransactionDate = DateTime.Now;
+
                 return transaction;
             }
 
-            // Attempt to parse Credit (Yaraneh) message
-            Match creditYaranehMatch = Regex.Match(message, @"واریز یارانه به حساب\s*(?<accountId>\d+)\s*مبلغ\s*(?<amount>[\d,]+)\s*ریال\s*(?<date>\d{4}/\d{2}/\d{2})");
-            if (creditYaranehMatch.Success)
-            {
-                transaction.Type = TransactionType.Credit;
-                transaction.Amount = decimal.Parse(creditYaranehMatch.Groups["amount"].Value.Replace(",", ""));
-                transaction.AccountId = creditYaranehMatch.Groups["accountId"].Value;
-                transaction.TransactionDate = ParseDateAndTime(creditYaranehMatch.Groups["date"].Value, "00:00", "YYYY/MM/DD"); // Time not present for credit yaraneh example
-                                                                                                                                // Balance might not be explicitly stated for credit in this format, or it's the *new* balance. Need to clarify from examples.
-                                                                                                                                // For now, let's assume it's not provided in this specific message for balance property.
-                return transaction;
-            }
-
-            // Attempt to parse Initial Balance message (or just balance update)
-            Match balanceMatch = Regex.Match(message, @"مانده\s*(?<balance>[\d,]+)\s*(?<date>\d{2}/\d{2}/\d{2,4})-(?<time>\d{1,2}:\d{2})");
-            if (balanceMatch.Success)
-            {
-                transaction.Type = TransactionType.BalanceInquiry; // Or just a balance update
-                transaction.Balance = decimal.Parse(balanceMatch.Groups["balance"].Value.Replace(",", ""));
-                transaction.TransactionDate = ParseDateAndTime(balanceMatch.Groups["date"].Value, balanceMatch.Groups["time"].Value, "YY/MM/DD");
-                return transaction;
-            }
-
-            return null; // If no specific pattern matches
+            return null; // If the message format doesn't match
         }
 
         // Helper method for date parsing (can be moved to a common utility class)
