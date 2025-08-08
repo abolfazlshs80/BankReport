@@ -67,13 +67,28 @@ namespace BankReport.Services.Database
                         Amout = transactions.LastOrDefault().Balance,
                         BankName= bankItem.Name,
                         MonyOutOfDay=transactions.Where(_=>
+                        _.Amount<0&&
                         _.TransactionDate.GetDayToShamsi()== currentDate.GetDayToShamsi()
                         && _.TransactionDate.GetMonthToShamsi()== currentDate.GetMonthToShamsi()
                         && _.TransactionDate.GetYearToShamsi() == currentDate.GetYearToShamsi()).Sum(_=>_.Amount)
                         ,
+                        MonyComOfDay = transactions.Where(_ =>
+                      _.Amount > 0 &&
+                      _.TransactionDate.GetDayToShamsi() == currentDate.GetDayToShamsi()
+                      && _.TransactionDate.GetMonthToShamsi() == currentDate.GetMonthToShamsi()
+                      && _.TransactionDate.GetYearToShamsi() == currentDate.GetYearToShamsi()).Sum(_ => _.Amount)
+                        ,
                         MonyOutOfMonth = transactions.Where(_ =>
+                        _.Amount < 0 &&
                          _.TransactionDate.GetMonthToShamsi() == currentDate.GetMonthToShamsi()
                         && _.TransactionDate.GetYearToShamsi() == currentDate.GetYearToShamsi()).Sum(_ => _.Amount)
+                        ,
+                        MonyComOfMonth = transactions.Where(_ =>
+                        _.Amount > 0 &&
+                        _.TransactionDate.GetDayToShamsi() == currentDate.GetDayToShamsi()
+                        && _.TransactionDate.GetMonthToShamsi() == currentDate.GetMonthToShamsi()
+                        && _.TransactionDate.GetYearToShamsi() == currentDate.GetYearToShamsi()).Sum(_ => _.Amount)
+                        ,
                     };
                     return bankTransactionResult;
                 }
