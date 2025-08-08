@@ -95,6 +95,18 @@
                         <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0"  FontSize="Micro" Text="بلغ خرج شده در این روز " Grid.Column="0"/>
                         <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.MonyOutOfDay}" Grid.Column="1"/>
                     </Grid>
+
+
+                    <Grid ColumnDefinitions="*,*" >
+                        <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0"  FontSize="Micro" Text="مبلغ ورودی در این ماه" Grid.Column="0"/>
+                        <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.MonyComOfMonth}" Grid.Column="1"/>
+                    </Grid>
+
+
+                    <Grid ColumnDefinitions="*,*" >
+                        <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0"  FontSize="Micro" Text="بلغ ورودی  در این روز " Grid.Column="0"/>
+                        <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.MonyComOfDay}" Grid.Column="1"/>
+                    </Grid>
                 </StackLayout>
             </ScrollView>
    
