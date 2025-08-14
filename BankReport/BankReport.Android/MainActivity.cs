@@ -6,6 +6,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Widget;
 using BankReport.Droid.receivers;
+using Plugin.LocalNotification;
 using System;
 
 namespace BankReport.Droid
@@ -20,12 +21,17 @@ namespace BankReport.Droid
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
-                var channel = new NotificationChannel("sms_channel", "SMS Monitor", NotificationImportance.Default)
+                var channel = new NotificationChannel(
+                    "default",        // همون ID که تو Builder استفاده کردی
+                    "Default Channel",
+                    NotificationImportance.High
+                )
                 {
-                    Description = "Service for monitoring SMS messages"
+                    Description = "Channel for app notifications"
                 };
-                var manager = (NotificationManager)GetSystemService(NotificationService);
-                manager.CreateNotificationChannel(channel);
+
+                var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+                notificationManager.CreateNotificationChannel(channel);
             }
         }
 
@@ -50,6 +56,7 @@ namespace BankReport.Droid
             CreateNotificationChannel();
             var intent = new Intent(this, typeof(MyForegroundService));
             StartForegroundService(intent);
+            NotificationCenter.CreateNotificationChannel();
         }
 
         protected override void OnDestroy()
@@ -108,6 +115,7 @@ namespace BankReport.Droid
                     Toast.MakeText(this, "مجوز خواندن SMS رد شد.", ToastLength.Short).Show();
                 }
             }
+
         }
 
     }
