@@ -9,7 +9,8 @@ using System.Linq;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-
+using Plugin.LocalNotification;
+using BankReport.Droid.receivers;
 
 namespace BankReport.Views
 {
@@ -40,17 +41,28 @@ namespace BankReport.Views
                     BankTransaction transaction = _smsProcessor.ProcessSms(sender, message);
                     //await _BankItemService.CreateBankItem(new Models.BankItem { Name = "test", CardNumber = message });
                     CreateNewBankTransAction(transaction);
-               //     await DisplayAlert("پیامک جدید", $"از: {sender}\nمتن: {message}", "باشه");
+                    DependencyService.Get<Droid.receivers.INotificationService>().ShowMessageWithReply(message);
+                    //     await DisplayAlert("پیامک جدید", $"از: {sender}\nمتن: {message}", "باشه");
                     // اینجا می‌تونی ذخیره یا تحلیل کنی
                 });
             };
+
+            MessagingCenter.Subscribe<object, string>(this, "ReplyMessage", (sender, message) =>
+            {
+                // اینجا متن رو مستقیماً روی UI استفاده می‌کنی
+                DisplayAlert("پاسخ از اعلان", message, "باشه");
+
+                // یا مثلاً توی Entry نمایش بدی
+                // MyEntry.Text = message;
+            });
         }
+
 
 
         public async void CreateNewBankTransAction(BankTransaction transaction)
         {
 
-            var t=await _BankTransactionService.GetBankTransactions();
+            var t = await _BankTransactionService.GetBankTransactions();
             if (transaction != null)
             {
                 await _BankTransactionService.CreateBankTransaction(transaction);
@@ -61,7 +73,7 @@ namespace BankReport.Views
             else
             {
                 // پیامک توسط هیچ یک از پارسرهای شناخته شده تشخیص داده نشد یا تجزیه نشد.
-             //   await DisplayAlert($"پیامک جدید", "پیامک نامشخص دریافت شد از ", "باشه");
+                //   await DisplayAlert($"پیامک جدید", "پیامک نامشخص دریافت شد از ", "باشه");
                 // می‌توانید این پیامک‌ها را برای بررسی‌های بعدی در یک لاگ جداگانه ذخیره کنید.
             }
         }
@@ -115,6 +127,25 @@ namespace BankReport.Views
         {
             var d = await _BankItemService.GetBankItems();
             await Navigation.PushModalAsync(new InsertBankItemPage(_BankItemService));
+        }
+
+
+        public void ShowMessageDialog(string message)
+        {
+            // ساخت نوتیفیکیشن
+            var notification = new NotificationRequest
+            {
+                NotificationId = 100,
+                Title = "پیام جدید",
+                Description = message,
+                ReturningData = "Dummy data", // داده اختیاری
+                                              //Schedule =new NotificationRequestSchedule()
+                                              //{
+                                              //    NotifyTime = DateTime.Now.AddSeconds(1) // زمان نمایش نوتیفیکیشن
+                                              //}
+            };
+
+            NotificationCenter.Current.Show(notification);
         }
 
 
