@@ -1,6 +1,7 @@
 ﻿using BankReport.Services.Database;
 using BankReport.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Plugin.LocalNotification;
 using System;
 using Xamarin.Forms;
 
@@ -28,21 +29,22 @@ namespace BankReport
             //Preferences.Set("username", "Ali");
 
             // خواندن مقدار
-            var user = _userService.firstUser().Result;
-            if (user == null)
-            {
-                MainPage = new NavigationPage(new RegisterPasswordCustomAlertPage(_deviceService, _userService));
+            //var user = _userService.firstUser().Result;
+            //if (user == null)
+            //{
+            //    MainPage = new NavigationPage(new MainPage(_deviceService));
 
-            }
-            else
-            {
+            //}
+            //else
+            //{
 
-                MainPage = new NavigationPage(new LoginPasswordCustomAlertPage(_deviceService, _userService));
+            //    MainPage = new NavigationPage(new LoginPasswordCustomAlertPage(_deviceService, _userService));
 
-            }
-
-
+            //}
+            MainPage = new NavigationPage(new MainPage(_deviceService));
         }
+
+     
 
         private void ConfigureServices(IServiceCollection services)
         {
