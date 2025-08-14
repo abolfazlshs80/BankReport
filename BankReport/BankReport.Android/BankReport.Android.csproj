@@ -76,6 +76,8 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="receivers\MyFirebaseMessagingService.cs" />
     <Compile Include="receivers\MyForegroundService.cs" />
+    <Compile Include="receivers\NotificationService_Android.cs" />
+    <Compile Include="receivers\ReplyReceiver.cs" />
     <Compile Include="receivers\SendSms.cs" />
     <Compile Include="receivers\SmsListener.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
