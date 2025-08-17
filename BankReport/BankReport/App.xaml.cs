@@ -3,6 +3,7 @@ using BankReport.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Plugin.LocalNotification;
 using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace BankReport
@@ -22,26 +23,31 @@ namespace BankReport
             ServiceProvider = serviceCollection.BuildServiceProvider();
             var _deviceService = ServiceProvider.GetRequiredService<IBankItemService>();
             var _userService = ServiceProvider.GetRequiredService<IUserService>();
-            //  MainPage = ServiceProvider.GetRequiredService<MainPage>();
-            //   MainPage = new ItemsPage();
+             _userService.CreateUser1(new Models.Database.User
+            {
+                UserName = "admin",
+                Password = "admin"
+            });
+             //  MainPage = ServiceProvider.GetRequiredService<MainPage>();
+             //   MainPage = new ItemsPage();
 
-            // ذخیره مقدار
-            //Preferences.Set("username", "Ali");
+             // ذخیره مقدار
+             //Preferences.Set("username", "Ali");
 
-            // خواندن مقدار
-            //var user = _userService.firstUser().Result;
-            //if (user == null)
-            //{
-            //    MainPage = new NavigationPage(new MainPage(_deviceService));
+             // خواندن مقدار
+             //var user = _userService.firstUser().Result;
+             //if (user == null)
+             //{
+             //    MainPage = new NavigationPage(new MainPage(_deviceService));
 
-            //}
-            //else
-            //{
+             //}
+             //else
+             //{
 
-            //    MainPage = new NavigationPage(new LoginPasswordCustomAlertPage(_deviceService, _userService));
+             //    MainPage = new NavigationPage(new LoginPasswordCustomAlertPage(_deviceService, _userService));
 
-            //}
-            MainPage = new NavigationPage(new MainPage(_deviceService));
+             //}
+             MainPage = new NavigationPage(new MainPage(_deviceService));
         }
 
      
