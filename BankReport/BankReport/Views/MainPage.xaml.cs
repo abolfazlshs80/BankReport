@@ -1,17 +1,18 @@
 ﻿
+using BankReport.Droid.receivers;
 using BankReport.Events;
 using BankReport.Interfaces;
+using BankReport.Models.Temp;
 using BankReport.Services;
 using BankReport.Services.Database;
 using BankReport.ViewModels;
+using Plugin.LocalNotification;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Plugin.LocalNotification;
-using BankReport.Droid.receivers;
-
 namespace BankReport.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
@@ -39,22 +40,38 @@ namespace BankReport.Views
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     BankTransaction transaction = _smsProcessor.ProcessSms(sender, message);
+                    Cloner.Value=transaction;
                     //await _BankItemService.CreateBankItem(new Models.BankItem { Name = "test", CardNumber = message });
-                    CreateNewBankTransAction(transaction);
                     DependencyService.Get<Droid.receivers.INotificationService>().ShowMessageWithReply(message);
-                    //     await DisplayAlert("پیامک جدید", $"از: {sender}\nمتن: {message}", "باشه");
-                    // اینجا می‌تونی ذخیره یا تحلیل کنی
+
                 });
             };
-
-            MessagingCenter.Subscribe<object, string>(this, "ReplyMessage", (sender, message) =>
+            MessagingCenter.Subscribe<object, string>(this, "ReplyMessage", async (sender, message) =>
             {
-                // اینجا متن رو مستقیماً روی UI استفاده می‌کنی
-                DisplayAlert("پاسخ از اعلان", message, "باشه");
+                if (Cloner.Value is BankTransaction transaction)
+                {
+                    transaction.Description = message;
 
-                // یا مثلاً توی Entry نمایش بدی
-                // MyEntry.Text = message;
+                    // اجرای عملیات روی بک‌گراند
+                    await Task.Run(() => CreateNewBankTransAction(transaction));
+                    Cloner.Value = null;
+                }
             });
+
+            //MessagingCenter.Subscribe<object, string>(this, "ReplyMessage", (sender, message) =>
+            //{
+
+            //    if(Cloner.Value!=null&& Cloner.Value is BankTransaction transaction)
+            //    {
+            //        if(transaction != null)
+            //        {
+
+            //            transaction.Description = message;
+            //            CreateNewBankTransAction(transaction);
+            //        }
+            //    }
+
+            //});
         }
 
 
