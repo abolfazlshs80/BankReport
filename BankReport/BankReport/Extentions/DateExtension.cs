@@ -11,15 +11,17 @@ namespace BankReport.Extentions
     {
         public static string ToShamsi(this DateTime date)
         {
+            
             var prCalender = new PersianCalendar();
+            var a1 = prCalender.GetHour(date);
             return prCalender.GetYear(date).ToString("00") + "/"
-                + prCalender.GetMonth(date).ToString("00") + "/" + prCalender.GetDayOfMonth(date).ToString("00");
+                + prCalender.GetMonth(date).ToString("00") + "/" + prCalender.GetDayOfMonth(date).ToString("00") + "--" + date.Hour+":"+date.Minute;
         }
         public static string ToShamsi(this DateTime? date)
         {
             var prCalender = new PersianCalendar();
             return prCalender.GetYear(date.Value).ToString("00") + "/"
-                + prCalender.GetMonth(date.Value).ToString("00") + "/" + prCalender.GetDayOfMonth(date.Value).ToString("00");
+                + prCalender.GetMonth(date.Value).ToString("00") + "/" + prCalender.GetDayOfMonth(date.Value).ToString("00")+"--"+prCalender.GetHour(date.Value);
         }
 
         public static int GetMonthToShamsi(this DateTime date)
