@@ -73,8 +73,71 @@
                     </Grid>
 
 
-                    <Grid ColumnDefinitions="*,*" >
-                        <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0" FontSize="Micro" Text="شماره حساب" Grid.Column="0"/>
+
+                    <StackLayout Padding="20">
+                        <Picker Title="انتخاب حساب"
+                ItemsSource="{Binding CardNumbers}"
+                ItemDisplayBinding="{Binding Number}"
+                SelectedItem="{Binding SelectedCardNumbers}" />
+
+                        <Label Text="{Binding SelectedCardNumbers.Name, StringFormat='حساب انتخاب شده: {0}'}"
+               FontSize="Large"
+               TextColor="Blue" />
+                    </StackLayout>
+
+                    <ListView ItemsSource="{Binding BankTransaction}" 
+          x:Name="ItemsListView"
+          HasUnevenRows="True"
+          SeparatorVisibility="None">
+
+                        <!-- Header جدول -->
+                        <ListView.Header>
+                            <Grid Padding="5" BackgroundColor="#EEEEEE">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0" Text="ردیف" FontAttributes="Bold" FontSize="Micro" HorizontalTextAlignment="End"/>
+                                <Label Grid.Column="1" Text="تاریخ" FontAttributes="Bold" FontSize="Micro"/>
+                                <Label Grid.Column="2" Text="مبلغ" FontAttributes="Bold" FontSize="Micro"/>
+                                <Label Grid.Column="3" Text="نوع" FontAttributes="Bold" FontSize="Micro"/>
+                                <Label Grid.Column="4" Text="توضیحات" FontAttributes="Bold" FontSize="Micro"/>
+                            </Grid>
+                        </ListView.Header>
+
+                        <!-- آیتم‌ها -->
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Frame Padding="5" Margin="0,0,0,1" BackgroundColor="White" HasShadow="True" CornerRadius="5">
+                                        <Grid Padding="5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50" />
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Label Grid.Column="0" Text="{Binding Row}" FontSize="Micro" HorizontalTextAlignment="End"/>
+                                            <Label Grid.Column="1" Text="{Binding Date}" FontSize="Micro"/>
+                                            <Label Grid.Column="2" Text="{Binding Amount}" FontSize="Micro"/>
+                                            <Label Grid.Column="3" Text="{Binding Type}" FontSize="Micro"/>
+                                            <Label Grid.Column="4" Text="{Binding Desc}" FontSize="Micro"/>
+                                        </Grid>
+                                    </Frame>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+
+                    <!--<Grid ColumnDefinitions="*,*,*,*,*" >-->
+                        <!--<Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0" FontSize="Micro" Text="شماره حساب" Grid.Column="0"/>
                         <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.BankName}" Grid.Column="1"/>
                     </Grid>
 
@@ -106,7 +169,7 @@
                     <Grid ColumnDefinitions="*,*" >
                         <Label TextColor="Black" HorizontalTextAlignment="Start"  Margin="10,0"  FontSize="Micro" Text="بلغ ورودی  در این روز " Grid.Column="0"/>
                         <Label TextColor="Black" HorizontalTextAlignment="End" FontSize="Micro" Text="{Binding BankTransaction.MonyComOfDay}" Grid.Column="1"/>
-                    </Grid>
+                    </Grid>-->
                 </StackLayout>
             </ScrollView>
    
