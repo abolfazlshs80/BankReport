@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Xamarin.Forms.Shapes;
 
 namespace BankReport.Services
 {
@@ -55,27 +56,36 @@ namespace BankReport.Services
                 RawMessage = message,
                 SenderPhoneNumber = phoneNumber
             };
-            string pattern = GetPatern();
-
-
-            Match debitMatch = Regex.Match(message.Trim(),
-pattern);
-            string sign = debitMatch.Groups["sign_before"].Value + debitMatch.Groups["sign_after"].Value;
-            sign = (message.Contains("برداشت")) ? "-" : "+";
-            if (sign.Contains("-")) sign = "-";
-            else if (sign.Contains("+")) sign = "+";
 
 
 
-            if (debitMatch.Success)
+
+            string[] lines = message.Split('\n');
+
+            string account = lines[0].Replace("حساب", "").Trim();
+            string deposit = lines[1].Replace("واریز", "").Replace("برداشت", "").Trim();
+            string balance = lines[2].Replace("مانده", "").Trim();
+
+            string[] dateTime = lines[3].Split('-');
+            string date = dateTime[0].Trim();
+            string time = dateTime[1].Trim();
+
+
+            string sign = "";
+            if (lines[1].Contains("برداشت")) sign = "-";
+            else if (lines[1].Contains("واریز")) sign = "+";
+
+            if (lines.Length > 0)
             {
-                transaction.Type = TransactionType.Debit;
+                TransactionType type = lines[1].Contains("برداشت")
+              ? TransactionType.Debit  // برداشت
+              : TransactionType.Credit; // واریز
 
 
-                transaction.Amount = decimal.Parse(sign + debitMatch.Groups["amount"].Value.Replace(",", ""));
-                transaction.Balance = decimal.Parse(debitMatch.Groups["balance"].Value.Replace(",", ""));
+                transaction.Amount = decimal.Parse(sign + deposit.Replace(",", ""));
+                transaction.Balance = decimal.Parse(sign + balance.Replace(",", ""));
 
-                transaction.AccountId = debitMatch.Groups["account"].Value;
+                transaction.AccountId = account;
 
                 transaction.TransactionDate = DateTime.Now;
 
@@ -84,6 +94,8 @@ pattern);
 
             return null; // If the message format doesn't match
         }
+
+
 
         private string GetPatern() => @"(?ix)
 ^حساب(?<account>[0-9۰-۹]+)\s*
