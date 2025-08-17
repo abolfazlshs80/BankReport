@@ -22,7 +22,10 @@ namespace BankReport.Services.Database
         {
             dbDatabaseService.db.Insert(User);
         }
-
+        public void CreateUser1(User User)
+        {
+            dbDatabaseService.db.Insert(User);
+        }
         public async Task<int> DeleteUser(User User)
         {
             return dbDatabaseService.db.Delete(User);
@@ -63,6 +66,7 @@ namespace BankReport.Services.Database
     public interface IUserService
     {
         Task CreateUser(User User);
+        void CreateUser1(User User);
         Task<int> DeleteUser(User User);
         Task<int> UpdateUser(User User);
         Task<List<User>> GetUsers();
