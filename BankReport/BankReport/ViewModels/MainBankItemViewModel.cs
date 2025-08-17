@@ -142,14 +142,35 @@ namespace BankReport.ViewModels
 
     }
 
-
-public class TransactionListViewModel : INotifyPropertyChanged
+    public class CardItemsBankItem
+    {
+        public string Name { get; set; }
+        public string Number { get; set; }
+        public bool IsActive { get; set; }
+    }
+    public class TransactionListViewModel : INotifyPropertyChanged
     {
         IBankTransactionService _bankTransactionService;
         public ObservableCollection<BankTransaction> Transactions { get; set; }
-        public BankTransactionResult BankTransaction { get; set; }
+
+
+
+        private ObservableCollection<BankTransactionResult> _bankTransaction;
+        public ObservableCollection<BankTransactionResult> BankTransaction
+        {
+            get => _bankTransaction;
+            set
+            {
+                if (_bankTransaction != value)
+                {
+                    _bankTransaction = value;
+                    OnPropertyChanged(nameof(BankTransaction));
+                }
+            }
+        }
         private BankTransaction _selectedTransaction;
         private bool _isBusy;
+        private int  _Id;
 
         public BankTransaction SelectedTransaction
         {
@@ -180,12 +201,39 @@ public class TransactionListViewModel : INotifyPropertyChanged
 
         public TransactionListViewModel(IBankTransactionService bankTransactionService,int id)
         {
+            _Id = id;
             _bankTransactionService = bankTransactionService;
                Transactions = new ObservableCollection<BankTransaction>();
-            BankTransaction=new BankTransactionResult();
-            Transactions = new ObservableCollection<BankTransaction>(bankTransactionService.GetBankTransactions().Result);
-            BankTransaction = _bankTransactionService.FindBankTransactionResult(id).Result;
-            // برای تست اولیه
+            BankTransaction=new ObservableCollection<BankTransactionResult>();
+            //Transactions = new ObservableCollection<BankTransaction>(bankTransactionService.GetBankTransactions().Result);
+       
+          // برای تست اولیه
+
+            var results = _bankTransactionService.FindBankTransactionResult(id).Result;
+            if (results != null && results.Any())
+            {
+                CardNumbers = new ObservableCollection<CardItemsBankItem>(
+                    results.GroupBy(x => x.CardNumber)
+                    .Select(g => g.First())
+                    .Select(x => new CardItemsBankItem
+                    {
+                        Name = x.BankName,
+                        Number = x.CardNumber,
+                        IsActive = false
+                    }).ToList());
+
+                BankTransaction = new ObservableCollection<BankTransactionResult>(
+                    results.Where(_ => _.BankName == CardNumbers.FirstOrDefault()?.Name).ToList()
+                );
+            }
+            else
+            {
+                CardNumbers = new ObservableCollection<CardItemsBankItem>();
+                BankTransaction = new ObservableCollection<BankTransactionResult>();
+            }
+
+            BankTransaction = new ObservableCollection<BankTransactionResult>(_bankTransactionService.FindBankTransactionResult(id).Result.Where(_ => _.BankName == CardNumbers.FirstOrDefault().Name).ToList());
+
         }
 
         // متدی برای افزودن تراکنش جدید (مثلاً وقتی پیامک جدیدی دریافت می‌شود)
@@ -223,53 +271,6 @@ public class TransactionListViewModel : INotifyPropertyChanged
             IsBusy = false;
         }
 
-        // داده‌های نمونه برای نمایش اولیه
-        private void LoadDummyTransactions()
-        {
-            Transactions.Add(new BankTransaction
-            {
-                BankName = "Bank Mellat",
-                Type = TransactionType.Debit,
-                Amount = 1_500_000m,
-                Balance = 2_612_110m,
-                TransactionDate = DateTime.Now.AddDays(-1),
-                Description = "برداشت با کارت",
-                RawMessage = "حساب 1527274495 برداشت 1,500,000 مانده 2,612,110 04/04/28-18:36"
-            });
-
-            Transactions.Add(new BankTransaction
-            {
-                BankName = "Resalat Bank",
-                Type = TransactionType.Credit,
-                Amount = 1_500_000m,
-                Balance = 10_490_490m,
-                TransactionDate = DateTime.Now.AddDays(-2),
-                Description = "واریز",
-                RawMessage = "10.10525354.1 +1,500,000 03/07 20:09 مانده: 10,490,490"
-            });
-
-            Transactions.Add(new BankTransaction
-            {
-                BankName = "Keshavarzi Bank",
-                Type = TransactionType.Credit,
-                Amount = 5_000_000m,
-                Balance = 13_422_960m,
-                TransactionDate = DateTime.Now.AddDays(-3),
-                Description = "واریز",
-                RawMessage = "واریز 5,000,000 مانده 13,422,960 040428-12:44 کارت *0271 bki. ir"
-            });
-
-            Transactions.Add(new BankTransaction
-            {
-                BankName = "Bank Melli",
-                Type = TransactionType.Debit,
-                Amount = 3_000_000m,
-                Balance = 12_455_820m,
-                TransactionDate = DateTime.Now.AddDays(-4),
-                Description = "برداشت",
-                RawMessage = "بانک ملی ایران برداشت: -3,000,000 حساب: 26008 مانده: 12,455,820 0502-20:52"
-            });
-        }
 
         // پیاده‌سازی INotifyPropertyChanged برای به‌روزرسانی UI
         public event PropertyChangedEventHandler PropertyChanged;
@@ -277,6 +278,36 @@ public class TransactionListViewModel : INotifyPropertyChanged
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public ObservableCollection<CardItemsBankItem> CardNumbers { get; set; } = new ObservableCollection<CardItemsBankItem>();
+
+        private CardItemsBankItem _selectedCardNumbers;
+        public CardItemsBankItem SelectedCardNumbers
+        {
+            get => _selectedCardNumbers;
+            set
+            {
+                if (_selectedCardNumbers != value)
+                {
+                    _selectedCardNumbers = value;
+                    OnPropertyChanged(nameof(SelectedCardNumbers));
+
+                    OnCardNumbersChanged();
+                }
+            }
+        }
+
+        private void OnCardNumbersChanged()
+        {
+
+            BankTransaction = new ObservableCollection<BankTransactionResult>(_bankTransactionService.FindBankTransactionResult(_Id).Result.Where(_ => _.BankName == CardNumbers.FirstOrDefault().Name &&_.CardNumber== SelectedCardNumbers?.Number).ToList());
+            // برای تست اولیه
+            // هر کاری که باید بعد از تغییر انتخاب انجام بشه
+            Console.WriteLine($"انتخاب شد: {SelectedCardNumbers?.Number}");
+        }
+
+        //protected void OnPropertyChanged(string propertyName) =>
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
 }
