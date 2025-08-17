@@ -94,7 +94,12 @@ namespace BankReport.Services
     public class BankTransactionResult
     {
 
+        public int Row { get; set; }
+        public string Date { get; set; }
+        public string Desc { get; set; }
+        public string Type { get; set; }
         public string BankName { get; set; }
+        public string CardNumber { get; set; }
         public decimal Amout { get; set; }
         public decimal MonyOutOfDay { get; set; }
         public decimal MonyComOfDay { get; set; }
