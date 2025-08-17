@@ -1,38 +1,55 @@
 ﻿using Android.App;
 using Android.Content;
-using Android.Content.PM;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using AndroidX.Core.App;
 
-namespace BankReport.Droid.receivers
+namespace BankReport.Droid.Services
 {
-    [Service(Enabled = true, Exported = true, ForegroundServiceType = ForegroundService.TypeDataSync)]
+    [Service]
     public class MyForegroundService : Service
     {
-        public const int SERVICE_NOTIFICATION_ID = 1000;
+        public const string CHANNEL_ID = "default";
 
-        public override IBinder OnBind(Intent intent) => null;
+        public override void OnCreate()
+        {
+            base.OnCreate();
+            CreateNotificationChannel();
+        }
+
+        void CreateNotificationChannel()
+        {
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                var channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Default Channel",
+                    NotificationImportance.Default
+                )
+                {
+                    Description = "Foreground service channel"
+                };
+
+                var manager = (NotificationManager)GetSystemService(NotificationService);
+                manager.CreateNotificationChannel(channel);
+            }
+        }
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
-            var notification = new Notification.Builder(this, "sms_channel")
-                .SetContentTitle("نظارت پیامک بانکی")
-                .SetContentText("در حال اجرا برای دریافت پیامک‌ها")
-                .SetSmallIcon(Resource.Drawable.icon_about) // آیکون خودت اینجا بذار
+            var notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .SetContentTitle("BankReport Service")
+                .SetContentText("Service is running in foreground")
+                .SetSmallIcon(Android. Resource.Drawable.IcNotificationOverlay) // ⚠️ حتماً داشته باش
+                .SetOngoing(true)
                 .Build();
 
-            StartForeground(SERVICE_NOTIFICATION_ID, notification);
+            StartForeground(1001, notification); // ⚠️ این خط ضروریست
 
-            // اینجا می‌تونی تایمر یا پردازش دائمی راه بندازی (اختیاری)
+            // TODO: اینجا می‌تونی کار اصلی سرویس مثل خواندن SMS یا پردازش بانک رو انجام بدی
 
             return StartCommandResult.Sticky;
         }
-    }
 
+        public override IBinder OnBind(Intent intent) => null;
+    }
 }
