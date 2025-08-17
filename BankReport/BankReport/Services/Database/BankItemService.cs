@@ -1,6 +1,7 @@
 ﻿using BankReport.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BankReport.Services.Database
@@ -34,7 +35,8 @@ namespace BankReport.Services.Database
 
         public async Task<List<BankItem>> GetBankItems()
         {
-            return dbDatabaseService.db.Table<BankItem>().ToList();
+            return dbDatabaseService.db.Table<BankItem>().ToList().GroupBy(x => x.Name) // گروه‌بندی بر اساس شماره کارت
+        .Select(g => g.First()).Select(_=>new BankItem { Name=_.Name,Id=_.Id,CardNumber=_.CardNumber}).ToList();
         }
 
         public async Task<List<BankItem>> FindBankItems(int Id)
