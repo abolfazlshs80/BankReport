@@ -8,6 +8,7 @@ using BankReport.Services.Database;
 using BankReport.ViewModels;
 using Plugin.LocalNotification;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -18,6 +19,8 @@ namespace BankReport.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
+        private bool _hasRun = true;
+        private List<string> lstMessage;
         private readonly BankSmsProcessor _smsProcessor;
         private ISendSms _sendSms;
         private IBankItemService _BankItemService;
@@ -28,6 +31,7 @@ namespace BankReport.Views
         {
 
             InitializeComponent();
+            lstMessage = new List<string>();
             //    GlobalEvents.OnSMSReceived += GlobalEvents_OnSMSReceived;
             this.FlowDirection = FlowDirection.RightToLeft;
             _BankItemService = BankItemService;
@@ -39,23 +43,30 @@ namespace BankReport.Views
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
+
                     BankTransaction transaction = _smsProcessor.ProcessSms(sender, message);
-                    Cloner.Value=transaction;
-                    //await _BankItemService.CreateBankItem(new Models.BankItem { Name = "test", CardNumber = message });
+                    Cloner.Value = transaction;
                     DependencyService.Get<Droid.receivers.INotificationService>().ShowMessageWithReply(message);
+
+
 
                 });
             };
             MessagingCenter.Subscribe<object, string>(this, "ReplyMessage", async (sender, message) =>
             {
-                if (Cloner.Value is BankTransaction transaction)
+                if (!lstMessage.Contains(message))
                 {
-                    transaction.Description = message;
+                    if (Cloner.Value is BankTransaction transaction)
+                    {
+                        transaction.Description = message;
 
-                    // اجرای عملیات روی بک‌گراند
-                    await Task.Run(() => CreateNewBankTransAction(transaction));
-                    Cloner.Value = null;
+                        // اجرای عملیات روی بک‌گراند
+                        await Task.Run(() => CreateNewBankTransAction(transaction));
+                        Cloner.Value = null;
+                    }
                 }
+                lstMessage.Add(message);
+                
             });
 
             //MessagingCenter.Subscribe<object, string>(this, "ReplyMessage", (sender, message) =>
