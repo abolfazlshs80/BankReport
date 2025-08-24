@@ -13,7 +13,7 @@ namespace BankReport.Services.Bank
     {
         public bool CanParse(string message, string phoneNumber)
         {
-            return phoneNumber.Contains("9830009417") || message.Contains("بانك ملي ايران") || message.Contains("حساب:26008");
+            return phoneNumber.Contains("9830009417") || phoneNumber.Contains("+989389114506") || message.Contains("بانك ملي ايران") || message.Contains("حساب:26008");
         }
         #region LastCode
         //        public BankTransaction Parse(string message, string phoneNumber)
