@@ -203,36 +203,41 @@ namespace BankReport.ViewModels
         {
             _Id = id;
             _bankTransactionService = bankTransactionService;
-               Transactions = new ObservableCollection<BankTransaction>();
-            BankTransaction=new ObservableCollection<BankTransactionResult>();
+            //Transactions = new ObservableCollection<BankTransaction>();
+            //BankTransaction=new ObservableCollection<BankTransactionResult>();
             //Transactions = new ObservableCollection<BankTransaction>(bankTransactionService.GetBankTransactions().Result);
-       
-          // برای تست اولیه
 
-            var results = _bankTransactionService.FindBankTransactionResult(id).Result;
-            if (results != null && results.Any())
+            // برای تست اولیه
+
+            Task.Run(async () =>
             {
-                CardNumbers = new ObservableCollection<CardItemsBankItem>(
-                    results.GroupBy(x => x.CardNumber)
-                    .Select(g => g.First())
-                    .Select(x => new CardItemsBankItem
-                    {
-                        Name = x.BankName,
-                        Number = x.CardNumber,
-                        IsActive = false
-                    }).ToList());
+                var results =await _bankTransactionService.FindBankTransactionResult(id);
+                if (results != null && results.Any())
+                {
+                    CardNumbers = new ObservableCollection<CardItemsBankItem>(
+                        results.GroupBy(x => x.CardNumber)
+                        .Select(g => g.First())
+                        .Select(x => new CardItemsBankItem
+                        {
+                            Name = x.BankName,
+                            Number = x.CardNumber,
+                            IsActive = false
+                        }).ToList());
 
-                BankTransaction = new ObservableCollection<BankTransactionResult>(
-                    results.Where(_ => _.BankName == CardNumbers.FirstOrDefault()?.Name).ToList()
-                );
-            }
-            else
-            {
-                CardNumbers = new ObservableCollection<CardItemsBankItem>();
-                BankTransaction = new ObservableCollection<BankTransactionResult>();
-            }
+                    BankTransaction = new ObservableCollection<BankTransactionResult>(
+                        results.Where(_ => _.BankName == CardNumbers.FirstOrDefault()?.Name).ToList()
+                    );
+                }
+                else
+                {
+                    CardNumbers = new ObservableCollection<CardItemsBankItem>();
+                    BankTransaction = new ObservableCollection<BankTransactionResult>();
+                }
+                return Task.CompletedTask;
+            });
+        
 
-            BankTransaction = new ObservableCollection<BankTransactionResult>(_bankTransactionService.FindBankTransactionResult(id).Result.Where(_ => _.BankName == CardNumbers.FirstOrDefault().Name).ToList());
+            //BankTransaction = new ObservableCollection<BankTransactionResult>(_bankTransactionService.FindBankTransactionResult(id).Result.Where(_ => _.BankName == CardNumbers.FirstOrDefault().Name).ToList());
 
         }
 
