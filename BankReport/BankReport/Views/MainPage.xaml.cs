@@ -43,10 +43,21 @@ namespace BankReport.Views
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-
+                    List<string> senders = new List<string>()
+                    {
+                        "9830009417",
+                        "+989389114506",
+                        "ResalatBank",
+                        "1527274495",
+                        "Bank Mellat",
+                        "KESHAVARZI",
+                        "1512127274495",
+                        "Bank Shahr",
+                    };
                     BankTransaction transaction = _smsProcessor.ProcessSms(sender, message);
                     Cloner.Value = transaction;
-                    DependencyService.Get<Droid.receivers.INotificationService>().ShowMessageWithReply(message);
+                    if (senders.Any(_ => _ == sender))
+                        DependencyService.Get<Droid.receivers.INotificationService>().ShowMessageWithReply(message);
 
 
 
@@ -66,7 +77,7 @@ namespace BankReport.Views
                     }
                 }
                 lstMessage.Add(message);
-                
+
             });
 
             //MessagingCenter.Subscribe<object, string>(this, "ReplyMessage", (sender, message) =>
