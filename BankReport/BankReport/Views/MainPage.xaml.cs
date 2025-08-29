@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Shapes;
 using Xamarin.Forms.Xaml;
 namespace BankReport.Views
 {
@@ -41,9 +42,11 @@ namespace BankReport.Views
 
             App.SMSMessageReceived = (sender, message) =>
             {
-                Device.BeginInvokeOnMainThread(async () =>
+                try
                 {
-                    List<string> senders = new List<string>()
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        List<string> senders = new List<string>()
                     {
                         "9830009417",
                         "+989389114506",
@@ -54,29 +57,42 @@ namespace BankReport.Views
                         "1512127274495",
                         "Bank Shahr",
                     };
-                    BankTransaction transaction = _smsProcessor.ProcessSms(sender, message);
-                    Cloner.Value = transaction;
-                    if (senders.Any(_ => _ == sender))
-                        DependencyService.Get<Droid.receivers.INotificationService>().ShowMessageWithReply(message);
+                        BankTransaction transaction = _smsProcessor.ProcessSms(sender, message);
+                        //Cloner.Value = transaction;
+
+                        int notificationId = new Random().Next(1000, 999999999);
+                        Cloner.Messages.Add(notificationId, transaction);
+
+                        if (senders.Any(_ => _ == sender))
+                            DependencyService.Get<Droid.receivers.INotificationService>().ShowMessageWithReply(message, notificationId);
 
 
 
-                });
-            };
-            MessagingCenter.Subscribe<object, string>(this, "ReplyMessage", async (sender, message) =>
-            {
-                if (!lstMessage.Contains(message))
-                {
-                    if (Cloner.Value is BankTransaction transaction)
-                    {
-                        transaction.Description = message;
+                    });
 
-                        // اجرای عملیات روی بک‌گراند
-                        await Task.Run(() => CreateNewBankTransAction(transaction));
-                        Cloner.Value = null;
-                    }
                 }
-                lstMessage.Add(message);
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine(ex.Message);
+                }
+            };
+            MessagingCenter.Subscribe<object, (string message, int notificationId)>(this, "ReplyMessage", async (sender, message) =>
+            {
+                if (!lstMessage.Contains(message.message))
+                {
+                    if (Cloner.Messages.TryGetValue(message.notificationId, out object value))
+
+                        if (value is BankTransaction transaction)
+                        {
+                            transaction.Description = message.message;
+
+                            // اجرای عملیات روی بک‌گراند
+                            await Task.Run(() => CreateNewBankTransAction(transaction));
+                            value = null;
+                        }
+                }
+                lstMessage.Add(message.message);
 
             });
 
