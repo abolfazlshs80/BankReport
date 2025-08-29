@@ -5,6 +5,7 @@ using Xamarin.Forms;
 using MyApp.Droid;
 using BankReport.Droid.receivers;
 using BankReport.Droid;
+using System;
 
 [assembly: Dependency(typeof(NotificationService_Android))]
 namespace MyApp.Droid
@@ -30,7 +31,7 @@ namespace MyApp.Droid
                 .Build();
 
             var builder = new NotificationCompat.Builder(context, "default")
-                .SetContentTitle("پیام جدید")
+                .SetContentTitle("پیام جدید"+new Random().Next(1000))
                 .SetContentText(message)
                 .SetSmallIcon(Android.Resource.Drawable.IcDialogInfo)
                 .AddAction(action)
