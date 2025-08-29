@@ -1,14 +1,16 @@
-﻿using BankReport.Models;
+﻿using BankReport.Extentions;
+using BankReport.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using BankReport.Extentions;
 
 namespace BankReport.Services.Database
 {
     public class BankTransactionService : IBankTransactionService
     {
+        private static readonly SemaphoreSlim _dbSemaphore = new SemaphoreSlim(1, 1);
         public readonly object dbLock = new object();
         private DatabaseService dbDatabaseService;
 
@@ -20,13 +22,17 @@ namespace BankReport.Services.Database
         public void InsertBankTransaction(BankTransaction BankTransaction) => dbDatabaseService.db.Insert(BankTransaction);
 
         public List<BankTransaction> GetBankTransaction() => dbDatabaseService.db.Table<BankTransaction>().ToList();
-        public async Task CreateBankTransaction(BankTransaction BankTransaction)
+        public async  Task CreateBankTransaction(BankTransaction BankTransaction)
         {
-            lock (dbLock)  // اگر Lock برای دیتابیس داری
+            await _dbSemaphore.WaitAsync();
+            try
             {
                 dbDatabaseService.db.Insert(BankTransaction);
             }
-    //        dbDatabaseService.db.Insert(BankTransaction);
+            finally
+            {
+                _dbSemaphore.Release();
+            }
         }
 
         public async Task<int> DeleteBankTransaction(BankTransaction BankTransaction)
