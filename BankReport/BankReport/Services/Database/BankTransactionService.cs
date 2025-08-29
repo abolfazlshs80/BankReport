@@ -9,6 +9,7 @@ namespace BankReport.Services.Database
 {
     public class BankTransactionService : IBankTransactionService
     {
+        public readonly object dbLock = new object();
         private DatabaseService dbDatabaseService;
 
         public BankTransactionService()
@@ -21,7 +22,11 @@ namespace BankReport.Services.Database
         public List<BankTransaction> GetBankTransaction() => dbDatabaseService.db.Table<BankTransaction>().ToList();
         public async Task CreateBankTransaction(BankTransaction BankTransaction)
         {
-            dbDatabaseService.db.Insert(BankTransaction);
+            lock (dbLock)  // اگر Lock برای دیتابیس داری
+            {
+                dbDatabaseService.db.Insert(BankTransaction);
+            }
+    //        dbDatabaseService.db.Insert(BankTransaction);
         }
 
         public async Task<int> DeleteBankTransaction(BankTransaction BankTransaction)
