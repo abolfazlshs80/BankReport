@@ -37,8 +37,9 @@ namespace MyApp.Droid
                 .AddAction(action)
                 .SetAutoCancel(true);
 
+            var notificationId = new Random().Next(10000, 99999);
             var notificationManager = NotificationManagerCompat.From(context);
-            notificationManager.Notify(100, builder.Build());
+            notificationManager.Notify(notificationId, builder.Build());
         }
     }
 }
